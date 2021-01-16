@@ -1,0 +1,10 @@
+converter/node_modules/
+converter/dist/
+
+demo/node_modules/
+
+progressivenet/node_modules/
+progressivenet/dist/
+
+*.pyc
+.vscode

@@ -1,0 +1,7 @@
+.main .classification-result {
+	background-color: #fafafa;
+    padding: 10px;
+    height: 80px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}

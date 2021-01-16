@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<title>ProgressiveNet Demo</title>
+	<link rel="stylesheet" type="text/css" href="css/global.css">
+	<link rel="stylesheet" type="text/css" href="css/ssd.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" crossorigin="anonymous">
+</head>
+<body>
+    <section class="container header">
+		<h1 class="underline">
+			<span class="parent">
+				<a href="./">ProgressiveNet Demo</a>
+				&gt;
+			</span>
+			Object Detection
+		</h1>
+		<h2>
+			Progressive detector model converted from <a href="https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd">SSD-MobileNetV2</a>, trained with MS COCO dataset.<br>
+			Model size: 9.3MB / Total # of progress steps: 8 / Transmission speed: 400KB/s
+		</h2>
+	</section>
+	<section class="main">
+		<div>
+			<input class="upload-file-btn" type="file">
+		</div>
+		<div class="image-wrap">
+			<img id="target-image" src="images/kite.jpg" width="500" />
+			<div class="detection-result"></div>
+		</div>
+	</section>
+	<section class="container">
+		<div style="text-align: center;">
+			<button class="load-btn">
+				Detect objects
+				<i class="spinner fas fa-spinner fa-spin"></i>
+			</button>
+		</div>
+	</section>
+	<section class="container">
+	</section>
+	<section class="timeline">
+		<div class="scenes">
+		</div>
+	</section>
+    <script src="ssd.js"></script>
+</body>
+</html>

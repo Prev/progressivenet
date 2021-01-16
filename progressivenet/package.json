@@ -1,0 +1,25 @@
+{
+  "name": "progressivenet",
+  "version": "0.1.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -d",
+    "build-clean": "rm -rf dist && tsc -d",
+    "index": "cd dist && node index.js",
+    "test": "jest"
+  },
+  "author": "prevdev@gmail.com",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@tensorflow/tfjs": "^1.7.1",
+    "uint-n-array": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "jest": "^25.2.4",
+    "ts-jest": "^25.3.0",
+    "typescript": "^3.9.7"
+  }
+}
