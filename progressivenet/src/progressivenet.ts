@@ -7,17 +7,17 @@ import { loadLayersModel } from './models/layers_model';
 import { GraphModel } from './models/graph_model';
 
 export function loadSequentially(
-		config: {
-			modelUrl: string,
-			numProgressSteps?: number,
-			concurrentMode?: boolean,
-			logging?: boolean,
-		},
-		callback: (model: tf.LayersModel | GraphModel, isLast: boolean, progressStep: number)
-			=> void | Promise<void>,
-	) {
-	const pNet = new ProgressiveNet(config);
-	return pNet.loadSequentially(callback);
+        config: {
+            modelUrl: string,
+            numProgressSteps?: number,
+            concurrentMode?: boolean,
+            logging?: boolean,
+        },
+        callback: (model: tf.LayersModel | GraphModel, isLast: boolean, progressStep: number)
+            => void | Promise<void>,
+    ) {
+    const pNet = new ProgressiveNet(config);
+    return pNet.loadSequentially(callback);
 }
 
 /**
@@ -33,252 +33,271 @@ export function loadSequentially(
  * console.log('All models are transmitted and inferenced');
  */
 export class ProgressiveNet {
-	public model: tf.LayersModel | GraphModel;
-	protected modelUrl: string;
-	protected pgNetConfig: PGNetConfig;
-	protected bufferMaps: ArrayBufferMap[] = [];
-	protected currentStep = 0;
+    // TFJS model restored from buffers
+    public model: tf.LayersModel | GraphModel;
 
-	protected numProgressSteps: number;
-	protected concurrentMode: boolean;
-	protected logging: boolean;
+    // Maximum number of progress step.
+    // If not defined, set from the config json file.
+    public numProgressSteps: number;
 
-	constructor(config: {
-		modelUrl: string,
-		numProgressSteps?: number,
-		concurrentMode?: boolean,
-		logging?: boolean,
-	}) {
-		this.modelUrl = config.modelUrl;
-		if (this.modelUrl[this.modelUrl.length - 1] == '/') {
-			this.modelUrl = this.modelUrl.substr(0, this.modelUrl.length - 1);
-		}
+    // Concurrently performs inference during transmission.
+    // Please check the orignal paper to see the effects of this mode.
+    public concurrentMode: boolean;
 
-		this.numProgressSteps = config.numProgressSteps;
-		this.concurrentMode = config.concurrentMode !== undefined ? config.concurrentMode : true;
-		this.logging = config.logging !== undefined ? config.logging : false;
-	}
+    // Loggging times if set to true.
+    public logging: boolean;
 
-	/**
-	 * Load progressive model sequentially.
-	 * @param callback: Callback function which is called when intermediate model is available.
-	 * @param config: {
-	 * 	- numProgressSteps: Total number of steps for intermeidate result.
-	 * 		Load to the end if not defined.
-	 * 	- concurrentMode: Execute transmission and inference concurrently if set to true.
-	 *  - logging: Logging message if set to true
-	 * }
-	 * @returns Promise<tf.LayersModel | GraphModel> instance where resolveFunc is called after
-	 * 	all progress is completed.
-	 */
-	public loadSequentially(
-		callback: (model: tf.LayersModel | GraphModel, isLast: boolean, progressStep: number)
-			=> (void | Promise<void>),
-	) {
-		const nextStep = async (step: number,
-								onFinish: (model: tf.LayersModel | GraphModel) => void,
-								onError: (e: any) => void) => {
-			
-			let buffer = null as ArrayBuffer;
-			try {
-				buffer = await this.loadBuffer(step);
-			} catch(e) {
-				onError(e);
-				return;
-			}
-			const isLast = (step == this.numProgressSteps - 1);
+    protected modelUrl: string;
+    protected pgNetConfig: PGNetConfig;
+    protected bufferMaps: ArrayBufferMap[] = [];
+    protected currentStep = 0;
 
-			if (this.concurrentMode) {
-				// If concurrentMode is enabled, we first call nextStep function
-				// to make browser load the next part of the data.
-				// Note that we do not use `await` keyword when calling nextStep function.
-				if (!isLast) {
-					nextStep(step + 1, onFinish, onError);
-				}
-				await this.restoreModelFromBuffer(step, buffer);
-				callback(this.model, isLast, step);
+    constructor(config: {
+        modelUrl: string,
+        numProgressSteps?: number,
+        concurrentMode?: boolean,
+        logging?: boolean,
+    }) {
+        this.modelUrl = config.modelUrl;
+        if (this.modelUrl[this.modelUrl.length - 1] == '/') {
+            this.modelUrl = this.modelUrl.substr(0, this.modelUrl.length - 1);
+        }
 
-			} else {
-				await this.restoreModelFromBuffer(step, buffer);
-				const returnVal = callback(this.model, isLast, step);
-				if (Promise.resolve(returnVal) == returnVal) {
-					// If callback is an async function, we wait for it before going nextStep.
-					await returnVal;
-				}
-				if (!isLast) {
-					nextStep(step + 1, onFinish, onError);
-				}
-			}
+        this.numProgressSteps = config.numProgressSteps;
+        this.concurrentMode = config.concurrentMode !== undefined ? config.concurrentMode : true;
+        this.logging = config.logging !== undefined ? config.logging : false;
+    }
 
-			if (isLast) {
-				onFinish(this.model);
-			}
-		}
+    /**
+     * Load progressive model sequentially.
+     * @param callback: Callback function which is called when intermediate model is available.
+     * @param config: {
+     * 	- numProgressSteps: Total number of steps for intermeidate result.
+     * 		Load to the end if not defined.
+     * 	- concurrentMode: Execute transmission and inference concurrently if set to true.
+     *  - logging: Logging message if set to true
+     * }
+     * @returns Promise<tf.LayersModel | GraphModel> instance where resolveFunc is called after
+     * 	all progress is completed.
+     */
+    public loadSequentially(
+        callback: (model: tf.LayersModel | GraphModel, isLast: boolean, progressStep: number)
+            => (void | Promise<void>),
+    ) {
+        const nextStep = async (step: number,
+                                onFinish: (model: tf.LayersModel | GraphModel) => void,
+                                onError: (e: any) => void) => {
+            
+            let buffer = null as ArrayBuffer;
+            try {
+                buffer = await this.loadBuffer(step);
+            } catch(e) {
+                onError(e);
+                return;
+            }
+            const isLast = (step == this.numProgressSteps - 1);
 
-		const promise = new Promise<tf.LayersModel | GraphModel>((resolveFunc, rejectFunc) => {
-			this.init().then(() => {
-				nextStep(0, resolveFunc, rejectFunc);
-			})
-		});
-		return promise;
-	}
+            if (this.concurrentMode) {
+                // If concurrentMode is enabled, we first call nextStep function
+                // to make browser load the next part of the data.
+                // Note that we do not use `await` keyword when calling nextStep function.
+                if (!isLast) {
+                    nextStep(step + 1, onFinish, onError);
+                }
+                await this.restoreModelFromBuffer(step, buffer);
+                callback(this.model, isLast, step);
 
-	/**
-	 * Init model by loading configs of the model.
-	 */
-	async init() {
-		// Load progressive.json config file
-		this.pgNetConfig = await io.fetchJSON(this.modelUrl + '/progressive.json') as PGNetConfig;
+            } else {
+                await this.restoreModelFromBuffer(step, buffer);
+                const returnVal = callback(this.model, isLast, step);
+                if (Promise.resolve(returnVal) == returnVal) {
+                    // If callback is an async function, we wait for it before going nextStep.
+                    await returnVal;
+                }
+                if (!isLast) {
+                    nextStep(step + 1, onFinish, onError);
+                }
+            }
 
-		// Set `numProgressSteps` from the interface described in the config.
-		if (this.numProgressSteps === undefined ||
-			this.pgNetConfig.dividingInterface.length < this.numProgressSteps
-		) {
-			this.numProgressSteps = this.pgNetConfig.dividingInterface.length;
-		}
+            if (isLast) {
+                onFinish(this.model);
+            }
+        }
 
-		// Load model.json file, which has similar format with TFJS
-		const modelJSON = await io.fetchJSON(this.modelUrl + '/model.json');
-		if (modelJSON['format'] == 'layers-model') {
-			this.model = loadLayersModel(modelJSON);
+        const promise = new Promise<tf.LayersModel | GraphModel>((resolveFunc, rejectFunc) => {
+            this.init().then(() => {
+                nextStep(0, resolveFunc, rejectFunc);
+            })
+        });
+        return promise;
+    }
 
-		} else if (modelJSON['format'] == 'graph-model') {
-			this.model = new GraphModel(modelJSON);
-		
-		} else if (modelJSON['format'] === undefined) {
-			console.warn('There is not `format` field on `model.json` file.' +
-						 'Try to load model with Graph format. It may not work.');
-			this.model = new GraphModel(modelJSON);
+    /**
+     * Init model by loading configs of the model.
+     */
+    async init() {
+        // Load progressive.json config file
+        this.pgNetConfig = await io.fetchJSON(this.modelUrl + '/progressive.json') as PGNetConfig;
 
-		} else {
-			throw new Error('Unknown model format.' +
-							'Supported formats are `layers-model` and `graph-model`');
-		}
-	}
+        // Set `numProgressSteps` from the interface described in the config.
+        if (this.numProgressSteps === undefined ||
+            this.pgNetConfig.dividingInterface.length < this.numProgressSteps
+        ) {
+            this.numProgressSteps = this.pgNetConfig.dividingInterface.length;
+        }
 
-		/**
-	 * Load next part of the model.
-	 * @returns current step of the transmission, which start from zero.
-	 */
-	async loadNext() {
-		if (!this.pgNetConfig) {
-			const message = 'Method loadNext() should be called after init() is called';
-			console.error(message);
-			throw new Error(message);
-		}
+        // Load model.json file, which has similar format with TFJS
+        const modelJSON = await io.fetchJSON(this.modelUrl + '/model.json');
+        if (modelJSON['format'] == 'layers-model') {
+            this.model = loadLayersModel(modelJSON);
 
-		const curStep = this.currentStep;
-		if (curStep >= this.numProgressSteps) {
-			return -1;
-		}
+        } else if (modelJSON['format'] == 'graph-model') {
+            this.model = new GraphModel(modelJSON);
+        
+        } else if (modelJSON['format'] === undefined) {
+            console.warn('There is not `format` field on `model.json` file.' +
+                         'Try to load model with Graph format. It may not work.');
+            this.model = new GraphModel(modelJSON);
 
-		const buffer = await this.loadBuffer(curStep);
-		await this.restoreModelFromBuffer(curStep, buffer);
+        } else {
+            throw new Error('Unknown model format.' +
+                            'Supported formats are `layers-model` and `graph-model`');
+        }
+    }
 
-		this.currentStep = curStep + 1;
-		return curStep;
-	}
+    /**
+     * Load next part of the model.
+     * Note that concurrent mode is not implemented in this method.
+     * @returns current step of the transmission, which start from zero.
+     */
+    async loadNext() {
+        if (!this.pgNetConfig) {
+            const message = 'Method loadNext() should be called after init() is called';
+            console.error(message);
+            throw new Error(message);
+        }
+        if (this.concurrentMode) {
+            console.warn('Directly calling `loadNext()` will disable concurrent mode. '+
+                         'Use `loadSequentially()` instead of `loadNext()` method.');
+        }
 
-	/**
-	 * Load weight file
-	 */
-	protected async loadBuffer(progressStep: number): Promise<ArrayBuffer> {
-		return await io.fetchArrayBuffer(this.modelUrl + '/' + this.pgNetConfig.files[progressStep]);
-	}
+        const curStep = this.currentStep;
+        if (curStep >= this.numProgressSteps) {
+            return -1;
+        }
 
-	/**
-	 * Init model weights from the ArrayBuffer.
-	 * Split the single array buffer to mutiple array buffers, where the number of buffers
-	 * is equal to the number of layers described in `pgNetConfig`.
-	 * @param progressStep: Part to download, which starts from zero.
-	 */
-	protected async restoreModelFromBuffer(progressStep: number, buffer: ArrayBuffer) {
-		const startTime = new Date();
-		// Build ArrayBufferMap from ArrayBuffer
-		const bufferMap = {} as ArrayBufferMap;
-		let offset = 0;
-		for (const layer of this.pgNetConfig.layers) {
-			const len = layer.byteSizes[progressStep];
-			bufferMap[layer.name] = buffer.slice(offset, offset + len);
-			offset += len;
-		}
+        const buffer = await this.loadBuffer(curStep);
+        await this.restoreModelFromBuffer(curStep, buffer);
 
-		// Save bufferMap for future use
-		this.bufferMaps.push(bufferMap);
+        this.currentStep = curStep + 1;
+        return curStep;
+    }
 
-		// Build tensorMap from buffferMaps (previous buffers + recently loaded buffer)
-		// by de-quantizing matrices.
-		const tensorMap = this.buildTensorMap(this.bufferMaps);
+    /**
+     * Load weight file
+     */
+    protected async loadBuffer(progressStep: number): Promise<ArrayBuffer> {
+        return await io.fetchArrayBuffer(this.modelUrl + '/' + this.pgNetConfig.files[progressStep]);
+    }
 
-		if (this.logging) {
-			console.log('restore. time:', ((new Date()).getTime() - startTime.getTime()) / 1000);
-		}
-		this.model.loadWeights(tensorMap);
-	}
+    /**
+     * Init model weights from the ArrayBuffer.
+     * Split the single array buffer to mutiple array buffers, where the number of buffers
+     * is equal to the number of layers described in `pgNetConfig`.
+     * @param progressStep: Part to download, which starts from zero.
+     */
+    protected async restoreModelFromBuffer(progressStep: number, buffer: ArrayBuffer) {
+        const startTime = new Date();
+        // Build ArrayBufferMap from ArrayBuffer
+        const bufferMap = {} as ArrayBufferMap;
+        let offset = 0;
+        for (const layer of this.pgNetConfig.layers) {
+            const len = layer.byteSizes[progressStep];
+            bufferMap[layer.name] = buffer.slice(offset, offset + len);
+            offset += len;
+        }
 
-	/**
-	 * Load weight buffers of part #{progressStep}.
-	 * Split the single array buffer to mutiple array buffers, where the number of buffers
-	 * is equal to the number of layers described in `pgNetConfig`.
-	 * @param progressStep: Part to download, which starts from zero.
-	 * @returns An ArrayBufferMap instance
-	 */
-	protected async loadWeightBuffers(progressStep: number): Promise<ArrayBufferMap> {
-		const buffer = await io.fetchArrayBuffer(this.modelUrl + '/' + this.pgNetConfig.files[progressStep]);
-		const ret = {} as ArrayBufferMap;
-		let offset = 0;
+        // Save bufferMap for future use
+        this.bufferMaps.push(bufferMap);
 
-		for (const layer of this.pgNetConfig.layers) {
-			const len = layer.byteSizes[progressStep];
-			ret[layer.name] = buffer.slice(offset, offset + len);
-			offset += len;
-		}
-		return ret;
-	}
+        // Build tensorMap from buffferMaps (previous buffers + recently loaded buffer)
+        // by de-quantizing matrices.
+        const tensorMap = this.buildTensorMap(this.bufferMaps);
 
-	/**
-	 * Restore tensorMap by performing de-quantization.
-	 */
-	protected buildTensorMap(bufferMaps: ArrayBufferMap[]) {
-		const nameToTensorMap: NamedTensorMap = {};
-		for (const layer of this.pgNetConfig.layers) {
-			let data: number[] | Int32Array;
+        if (this.logging) {
+            console.log('restore. time:', ((new Date()).getTime() - startTime.getTime()) / 1000);
+        }
+        this.model.loadWeights(tensorMap);
+    }
 
-			if (layer.dtype == 'float32') {
-				const buffers = bufferMaps.map(map => map[layer.name]);
-				data = quantization.decode(
-					buffers,
-					layer.quantization.scale,
-					layer.quantization.min,
-					this.pgNetConfig.dividingInterface,
-				);
+    /**
+     * Load weight buffers of part #{progressStep}.
+     * Split the single array buffer to mutiple array buffers, where the number of buffers
+     * is equal to the number of layers described in `pgNetConfig`.
+     * @param progressStep: Part to download, which starts from zero.
+     * @returns An ArrayBufferMap instance
+     */
+    protected async loadWeightBuffers(progressStep: number): Promise<ArrayBufferMap> {
+        const buffer = await io.fetchArrayBuffer(this.modelUrl + '/' + this.pgNetConfig.files[progressStep]);
+        const ret = {} as ArrayBufferMap;
+        let offset = 0;
 
-			} else if (layer.dtype == 'int32') {
-				// When the tensor is int32, data is not quantized and
-				// it is saved to the first file only.
-				data = new Int32Array(bufferMaps[0][layer.name]);
+        for (const layer of this.pgNetConfig.layers) {
+            const len = layer.byteSizes[progressStep];
+            ret[layer.name] = buffer.slice(offset, offset + len);
+            offset += len;
+        }
+        return ret;
+    }
 
-			} else {
-				throw new Error(`Currently dtype "${layer.dtype}" is not supported`);
-			}
-			nameToTensorMap[layer.name] = tf.tensor(data, layer.shape, layer.dtype);
-		}
-		return nameToTensorMap;
-	}
+    /**
+     * Restore tensorMap by performing de-quantization.
+     */
+    protected buildTensorMap(bufferMaps: ArrayBufferMap[]) {
+        const nameToTensorMap: NamedTensorMap = {};
+        for (const layer of this.pgNetConfig.layers) {
+            let data: number[] | Int32Array;
 
-	protected getInitTensorMap() {
-		const nameToTensorMap: NamedTensorMap = {};
-		for (const layer of this.pgNetConfig.layers) {
-			if (layer.dtype == 'float32') {
-				nameToTensorMap[layer.name] = tf.fill(
-					layer.shape,
-					layer.quantization.min + layer.quantization.scale * 0.5,
-					layer.dtype,
-				);
-			} else {
-				nameToTensorMap[layer.name] = tf.zeros(layer.shape, layer.dtype);
-			}
-		}
-		return nameToTensorMap;
-	}
+            if (layer.dtype == 'float32') {
+                const buffers = bufferMaps.map(map => map[layer.name]);
+                data = quantization.decode(
+                    buffers,
+                    layer.quantization.scale,
+                    layer.quantization.min,
+                    this.pgNetConfig.dividingInterface,
+                );
+
+            } else if (layer.dtype == 'int32') {
+                // When the tensor is int32, data is not quantized and
+                // it is saved to the first file only.
+                data = new Int32Array(bufferMaps[0][layer.name]);
+
+            } else {
+                throw new Error(`Currently dtype "${layer.dtype}" is not supported`);
+            }
+            nameToTensorMap[layer.name] = tf.tensor(data, layer.shape, layer.dtype);
+        }
+        return nameToTensorMap;
+    }
+
+    /**
+     * Init tensor map to zero values.
+     * Currently is method is not used.
+     * TODO: call this function to boost-up inference when using WebGL backend.
+     */
+    protected _getInitTensorMap() {
+        const nameToTensorMap: NamedTensorMap = {};
+        for (const layer of this.pgNetConfig.layers) {
+            if (layer.dtype == 'float32') {
+                nameToTensorMap[layer.name] = tf.fill(
+                    layer.shape,
+                    layer.quantization.min + layer.quantization.scale * 0.5,
+                    layer.dtype,
+                );
+            } else {
+                nameToTensorMap[layer.name] = tf.zeros(layer.shape, layer.dtype);
+            }
+        }
+        return nameToTensorMap;
+    }
 }

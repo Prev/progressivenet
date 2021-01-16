@@ -36,7 +36,7 @@ We further demonstrate that our method can improve user experiences by providing
 </p>
 
 **Demo:**  
-You can try using our pre-built models in [http://gcpc.prev.kr/pnet/](http://gcpc.prev.kr/pnet/)
+You can try using our pre-built models in [https://prev.github.io/progressivenet](https://prev.github.io/progressivenet)
 
 
 ## Getting Started

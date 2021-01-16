@@ -4,12 +4,12 @@
  *
  * Usage:
  *   import { ProgressiveNet, ObjectDetector, GraphModel } from 'progressivenet';
- *   const pNet = new ProgressiveNet(modelUrl);
- *   await pNet.init();
+ *   const pgNet = new ProgressiveNet(modelUrl);
+ *   await pgNet.init();
  *
  *   for (let i = 0; i < iterCnt; i++) {
- *     await pNet.loadNext();
- *     const detector = new ObjectDetector(pNet.model as GraphModel);
+ *     await pgNet.loadNext();
+ *     const detector = new ObjectDetector(pgNet.model as GraphModel);
  *     const predictions = await detector.detect(img);
  *     console.log(predictions);
  *   }

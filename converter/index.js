@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require("./dist/convert.js");
+require("./dist/main.js");

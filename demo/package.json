@@ -1,13 +1,17 @@
 {
 	"name": "progressivenet-demo",
-	"version": "0.0.1",
-	"description": "",
+	"version": "1.0.0",
+	"description": "ProgressiveNet Demo",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/Prev/progressivenet.git"
+	},
+	"author": "prevdev@gmail.com",
+	"license": "UNLICENSED",
 	"scripts": {
 		"start": "webpack-dev-server --mode development --open",
 		"build": "webpack --mode production"
 	},
-	"author": "",
-	"license": "ISC",
 	"devDependencies": {
 		"@tensorflow/tfjs-converter": "^1.7.1",
 		"@tensorflow/tfjs-core": "^1.7.1",
@@ -21,6 +25,6 @@
 		"@tensorflow-models/coco-ssd": "^2.0.1",
 		"@tensorflow/tfjs": "^1.7.1",
 		"@types/jquery": "^3.3.34",
-		"progressivenet": "file:../progressivenet"
+		"progressivenet": "^1.0.0"
 	}
 }

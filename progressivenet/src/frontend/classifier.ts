@@ -4,12 +4,12 @@
  *
  * Usage:
  *   import { ProgressiveNet, Classifier, GraphModel } from 'progressivenet';
- *   const pNet = new ProgressiveNet(modelUrl);
- *   await pNet.init();
+ *   const pgNet = new ProgressiveNet(modelUrl);
+ *   await pgNet.init();
  *
  *   for (let i = 0; i < iterCnt; i++) {
- *     await pNet.loadNext();
- *     const classifier = new Classifier(pNet.model as GraphModel);
+ *     await pgNet.loadNext();
+ *     const classifier = new Classifier(pgNet.model as GraphModel);
  *	   const predictions = await classifier.classify(img);
  *     console.log(predictions);
  *   }

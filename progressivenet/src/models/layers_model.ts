@@ -7,11 +7,11 @@ import { deserialize } from '@tensorflow/tfjs-layers/dist/layers/serialization';
 export type LayersModel = tf.LayersModel;
 
 export function loadLayersModel(modelJSON: any): LayersModel {
-	let modelTopology = modelJSON['modelTopology'] as PyJsonDict;
-	if (modelTopology['model_config'] != null) {
-		modelTopology = modelTopology['model_config'] as PyJsonDict;
-	}
-	const tsConfig = convertPythonicToTs(modelTopology) as serialization.ConfigDict;
-	return deserialize(tsConfig) as LayersModel;
+    let modelTopology = modelJSON['modelTopology'] as PyJsonDict;
+    if (modelTopology['model_config'] != null) {
+        modelTopology = modelTopology['model_config'] as PyJsonDict;
+    }
+    const tsConfig = convertPythonicToTs(modelTopology) as serialization.ConfigDict;
+    return deserialize(tsConfig) as LayersModel;
 }
 
