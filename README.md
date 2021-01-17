@@ -15,13 +15,8 @@ Youngsoo Lee<sup>1</sup>, Sangdoo Yun<sup>2</sup>, Sunghee Choi<sup>1</sup>
 
 ### Abstract
 
-Modern image files are usually progressively transmitted and provide a preview before downloading the entire image for improved user experiences to cope with a slow network connection. 
-In this paper, with a similar goal, we propose a progressive transmission framework for deep learning models, especially to deal with the scenario where pre-trained deep models are transmitted from servers and executed at user devices (e.g., web browser or mobile).
-Our progressive transmission can infer an approximate model in the middle of file delivering, and provide an acceptable intermediate outputs quickly.
-In our framework, a deep learning model is divided and progressively transmitted to the user devices.
-Then, the divided pieces are progressively concatenated to construct approximate models in user devices.
-Experiments show our method is computationally efficient without an increase of the model size and total transmission time while preserving accuracy of the model. 
-We further demonstrate that our method can improve user experiences by providing the approximate models in a slow connection.
+Modern image files are usually progressively transmitted and provide a preview before downloading the entire image for improved user experience to cope with a slow network connection. In this paper, with a similar goal, we propose a progressive transmission framework for deep learning models, especially to deal with the scenario where pre-trained deep learning models are transmitted from servers and executed at user devices (e.g., web browser or mobile). Our progressive transmission allows inferring approximate models in the middle of file delivery, and quickly provide an acceptable intermediate outputs. On the server-side, a deep learning model is divided and progressively transmitted to the user devices. Then, the divided pieces are progressively concatenated to construct approximate models on user devices. Experiments show that our method is computationally efficient without increasing the model size and total transmission time while preserving the model accuracy. We further demonstrate that our method can improve the user experience by providing the approximate models in a slow connection.
+
 
 ## Examples and Demo
 
