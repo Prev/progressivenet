@@ -86,13 +86,13 @@ pgNet.loadSequentially((model, isLast, progressStep) => {
 }
 ```
 
-You can see the detailed code in [./demo](./demo). It is written in TypeScript and implemented with jQuery.
+You can see the detailed code in [demo](./demo). It is written in TypeScript and implemented with jQuery.
 
 ## Advanced Usage
 
 Rather than implementing a training code for ProgressiveNet, we provide a **converter** for generating progressive model from static TensorFlowJS model.
 
-Towards making your own model beyond our pre-converted models, try visiting [./converter](./converter) directory for advanced usage.
+Towards making your own model beyond our pre-converted models, try visiting [converter](./converter) directory for advanced usage.
 Converter is implemented with TypeScript and and we provide command line interface(CLI) for converting TFJS models to progressive models.
 
 ## License

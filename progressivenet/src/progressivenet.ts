@@ -104,11 +104,11 @@ export class ProgressiveNet {
                 if (!isLast) {
                     nextStep(step + 1, onFinish, onError);
                 }
-                await this.restoreModelFromBuffer(step, buffer);
+                this.restoreModelFromBuffer(step, buffer);
                 callback(this.model, isLast, step);
 
             } else {
-                await this.restoreModelFromBuffer(step, buffer);
+                this.restoreModelFromBuffer(step, buffer);
                 const returnVal = callback(this.model, isLast, step);
                 if (Promise.resolve(returnVal) == returnVal) {
                     // If callback is an async function, we wait for it before going nextStep.
@@ -187,7 +187,7 @@ export class ProgressiveNet {
         }
 
         const buffer = await this.loadBuffer(curStep);
-        await this.restoreModelFromBuffer(curStep, buffer);
+        this.restoreModelFromBuffer(curStep, buffer);
 
         this.currentStep = curStep + 1;
         return curStep;
@@ -203,10 +203,10 @@ export class ProgressiveNet {
     /**
      * Init model weights from the ArrayBuffer.
      * Split the single array buffer to mutiple array buffers, where the number of buffers
-     * is equal to the number of layers described in `pgNetConfig`.
+     * equals to the number of the layers described in `pgNetConfig`.
      * @param progressStep: Part to download, which starts from zero.
      */
-    protected async restoreModelFromBuffer(progressStep: number, buffer: ArrayBuffer) {
+    protected restoreModelFromBuffer(progressStep: number, buffer: ArrayBuffer) {
         const startTime = new Date();
         // Build ArrayBufferMap from ArrayBuffer
         const bufferMap = {} as ArrayBufferMap;
@@ -233,7 +233,7 @@ export class ProgressiveNet {
     /**
      * Load weight buffers of part #{progressStep}.
      * Split the single array buffer to mutiple array buffers, where the number of buffers
-     * is equal to the number of layers described in `pgNetConfig`.
+     * equals to the number of the layers described in `pgNetConfig`.
      * @param progressStep: Part to download, which starts from zero.
      * @returns An ArrayBufferMap instance
      */

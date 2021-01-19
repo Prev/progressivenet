@@ -1,7 +1,7 @@
 import { loadSequentially, ObjectDetector, GraphModel, tf } from 'progressivenet';
 import './common';
 
-const modelUrl = 'http://gcpc.prev.kr/pgnet-models/detection/ssd_mobilenet_v2_intv2/';
+const modelUrl = 'https://research.prev.kr/pgnet-models/detection/ssd_mobilenet_v2_intv2/';
 const numProgressSteps = 8;
 
 interface DetectionResult {

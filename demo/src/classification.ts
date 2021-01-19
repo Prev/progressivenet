@@ -1,7 +1,7 @@
 import { loadSequentially, Classifier, GraphModel, tf } from 'progressivenet';
 import './common';
 
-const modelUrl = 'http://gcpc.prev.kr/pgnet-models/classification/mobilenet_v2_intv2/';
+const modelUrl = 'https://research.prev.kr/pgnet-models/classification/mobilenet_v2_intv2/';
 const numProgressSteps = 8;
 let predictionResults = [] as string[];
 
