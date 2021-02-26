@@ -12,13 +12,13 @@ function run(img: HTMLImageElement, numProgressSteps: number) {
     const startTime = new Date();
     predictionResults = [];
 
-    tf.setBackend('cpu');
+    // tf.setBackend('cpu');
 
     return loadSequentially({
         modelUrl,
         numProgressSteps,
         concurrentMode: true,
-        logging: false,
+        logging: true,
     }, async (model, isLast, step) => {
         const inferenceStartTime = new Date();
         const classifier = new Classifier(model as GraphModel);

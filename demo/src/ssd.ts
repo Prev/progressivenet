@@ -35,6 +35,7 @@ async function run(img: HTMLImageElement, numProgressSteps: number) {
         modelUrl,
         numProgressSteps,
         concurrentMode: true,
+        logging: true,
     }, async (model, isLast, step) => {
         const inferenceStartTime = new Date();
         const detector = new ObjectDetector(model as GraphModel);
