@@ -1,8 +1,16 @@
 import { loadSequentially, Classifier, GraphModel, tf } from 'progressivenet';
 import './common';
 
-const modelUrl = 'https://research.prev.kr/pgnet-models/classification/mobilenet_v2_intv2/';
+const modelName = 'mobilenet_v2';
+
+const modelUrl = `https://research.prev.kr/pgnet-models/classification/${modelName}_intv2/`;
 const numProgressSteps = 8;
+const concurrentMode = true;
+
+// const modelUrl = `https://research.prev.kr/pgnet-models/classification/${modelName}_16_16/`;
+// const numProgressSteps = 1;
+// const concurrentMode = false;
+
 let predictionResults = [] as string[];
 
 function run(img: HTMLImageElement, numProgressSteps: number) {
@@ -12,12 +20,12 @@ function run(img: HTMLImageElement, numProgressSteps: number) {
     const startTime = new Date();
     predictionResults = [];
 
-    // tf.setBackend('cpu');
+    tf.setBackend('cpu');
 
     return loadSequentially({
         modelUrl,
         numProgressSteps,
-        concurrentMode: true,
+        concurrentMode,
         logging: true,
     }, async (model, isLast, step) => {
         const inferenceStartTime = new Date();

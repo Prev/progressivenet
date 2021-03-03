@@ -3,6 +3,7 @@ import './common';
 
 const modelUrl = 'https://research.prev.kr/pgnet-models/detection/ssd_mobilenet_v2_intv2/';
 const numProgressSteps = 8;
+const concurrentMode = true;
 
 interface DetectionResult {
     boxHTML: string;
@@ -34,7 +35,7 @@ async function run(img: HTMLImageElement, numProgressSteps: number) {
     return loadSequentially({
         modelUrl,
         numProgressSteps,
-        concurrentMode: true,
+        concurrentMode,
         logging: true,
     }, async (model, isLast, step) => {
         const inferenceStartTime = new Date();

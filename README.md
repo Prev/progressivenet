@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/progressivenet.svg)](https://www.npmjs.com/package/progressivenet)
 
-Official implementation of the paper "Progressive Transmission and Inference of Deep Learning Models", submitted to ICWE 2021.
+Official implementation of the paper "Progressive Transmission and Inference of Deep Learning Models", a working paper.
 
 Youngsoo Lee<sup>1</sup>, Sangdoo Yun<sup>2</sup>, Sunghee Choi<sup>1</sup>
 
