@@ -39,6 +39,19 @@ html, body {
 	line-height: 1.5;
 }
 
+.header .badges {
+	margin-top: 3px;
+}
+
+.header .badges .badge {
+	display: inline-block;
+	background-color: #eaeaea;
+	padding: 2px 8px 1px;
+	border-radius: 20px;
+	font-size: 14px;
+	color: #666;
+}
+
 a {
 	border: none;
 	color: #2e88b5;
