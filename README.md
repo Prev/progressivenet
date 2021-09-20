@@ -1,21 +1,29 @@
-# ProgressiveNet
+# ProgressiveNet [![npm version](https://badge.fury.io/js/progressivenet.svg)](https://www.npmjs.com/package/progressivenet)
 
-[![npm version](https://badge.fury.io/js/progressivenet.svg)](https://www.npmjs.com/package/progressivenet)
+Official implementation of the paper "Progressive Transmission and Inference of Deep Learning Models", to appear at 20th IEEE International Conference on Machine
+Learning and Applications (ICMLA 2021).
 
-Official implementation of the paper "Progressive Transmission and Inference of Deep Learning Models", a working paper.
+[[preprint](https://get.prev.kr/papers/preprint/progressivenet.pdf)]
+[[demo](https://prev.github.io/progressivenet/)]
 
-Youngsoo Lee<sup>1</sup>, Sangdoo Yun<sup>2</sup>, Sunghee Choi<sup>1</sup>
+[Youngsoo Lee](https://github.com/Prev)<sup>1</sup>, [Sangdoo Yun](https://github.com/hellbell)<sup>2</sup>, [Yeonghun Kim](https://github.com/Neutrinoant)<sup>1</sup> Sunghee Choi<sup>1</sup>
 
-<sup>1</sup> School of Computing, Korea Advanced Institute of Science and Technology(KAIST)  
+<sup>1</sup> School of Computing, Korea Advanced Institute of Science and Technology(KAIST)<br>
 <sup>2</sup> AI LAB, NAVER Corp.
 
 <p align="center">
-    <img src="figures/overview.png" width="400" alt="Overview">
+    <img src="figures/overview.png?v2" width="400" alt="Overview">
 </p>
 
 ### Abstract
 
-Modern image files are usually progressively transmitted and provide a preview before downloading the entire image for improved user experience to cope with a slow network connection.  In this paper, with a similar goal, we propose a progressive transmission framework for deep learning models, especially to deal with the scenario where pre-trained deep learning models are transmitted from servers and executed at user devices (e.g., web browser or mobile). Our progressive transmission allows inferring approximate models in the middle of file delivery, and quickly provide an acceptable intermediate outputs. On the server-side, a deep learning model is divided and progressively transmitted to the user devices. Then, the divided pieces are progressively concatenated to construct approximate models on user devices. Experiments show that our method is computationally efficient without increasing the model size and total transmission time while preserving the model accuracy.  We further demonstrate that our method can improve the user experience by providing the approximate models especially in a slow connection.
+Modern image files are usually progressively transmitted and provide a preview before downloading the entire image for improved user experience to cope with a slow network connection.
+In this paper, with a similar goal, we propose a progressive transmission framework for deep learning models, especially to deal with the scenario where pre-trained deep learning models are transmitted from servers and executed at user devices (e.g., web browser or mobile).
+Our progressive transmission allows inferring approximate models in the middle of file delivery, and quickly provide an acceptable intermediate outputs.
+On the server-side, a deep learning model is divided and progressively transmitted to the user devices.
+Then, the divided pieces are progressively concatenated to construct approximate models on user devices.
+Experiments show that our method is computationally efficient without increasing the model size and total transmission time while preserving the model accuracy.
+We further demonstrate that our method can improve the user experience by providing the approximate models especially in a slow connection.
 
 
 ## Examples and Demo
@@ -23,16 +31,16 @@ Modern image files are usually progressively transmitted and provide a preview b
 **Image classification Model (MobileNetV2):**
 
 <p align="center">
-    <img src="figures/classification-example.jpg" width="100%" alt="Object Detection Model Example">
+    <img src="figures/classification-example.jpg?v2" width="100%" alt="Object Detection Model Example">
 </p>
 
 **Object Detection Model (SSD-MobileNetV2):**
 
 <p align="center">
-    <img src="figures/detection-example.jpg" width="550" alt="Object Detection Model Example">
+    <img src="figures/detection-example.jpg?v2" width="100%" alt="Object Detection Model Example">
 </p>
 
-**Demo:**  
+**Demo:**
 You can try using our pre-built models in [https://prev.github.io/progressivenet](https://prev.github.io/progressivenet)
 
 
@@ -97,5 +105,5 @@ Converter is implemented with TypeScript and and we provide command line interfa
 
 ## License
 
-CC 4.0 Attribution-NonCommercial International.  
+CC 4.0 Attribution-NonCommercial International.
 The software is for educaitonal and academic research purpose only.
