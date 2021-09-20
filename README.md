@@ -69,7 +69,7 @@ const img = document.getElementById('my-img');
 pgNet.loadSequentially((model, isLast, progressStep) => {
     const classifier = new Classifier(model);
     const predictions = await classifier.classify(img);
-    console.log('Result from step #' + progressStep + ':', predictions);
+    console.log(`Result from step #${progressStep}: ${predictions}`);
 
 }).then() => {
     console.log('All models are transmitted and inferenced');
@@ -87,7 +87,7 @@ const img = document.getElementById('my-img');
 pgNet.loadSequentially((model, isLast, progressStep) => {
     const detector = new ObjectDetector(model);
     const predictions = await detector.detect(img);
-    console.log('Result from step #' + progressStep + ':', predictions);
+    console.log(`Result from step #${progressStep}: ${predictions}`);
 
 }).then() => {
     console.log('All models are transmitted and inferenced');
@@ -96,12 +96,25 @@ pgNet.loadSequentially((model, isLast, progressStep) => {
 
 You can see the detailed code in [demo](./demo). It is written in TypeScript and implemented with jQuery.
 
-## Advanced Usage
+## Models
 
-Rather than implementing a training code for ProgressiveNet, we provide a **converter** for generating progressive model from static TensorFlowJS model.
+ProgressiveNet requires a dedicated model file for the progressive execution (inference).<br>
+We provide MobileNetV2 and SSD-MobileNetV2 models in the [Release](hhttps://github.com/Prev/progressivenet/releases).
+
+### Generating custom model
+
+Rather than implementing a *training* code for ProgressiveNet, we provide a **converter** for generating progressive model from static TensorFlowJS model.
 
 Towards making your own model beyond our pre-converted models, try visiting [converter](./converter) directory for advanced usage.
-Converter is implemented with TypeScript and and we provide command line interface(CLI) for converting TFJS models to progressive models.
+Converter is implemented with TypeScript and and we provide command line interface(CLI) to convert TFJS models into progressive models.
+
+If you want to apply ProgressiveNet into your own service with your own models, you can follow the instructions below:
+
+1. Writing the training code with TensorFlow.
+2. Train the model and save it in a TF format (either SavedModel or Keras).
+3. Convert your model into a TFJS model by following the [guide](https://www.tensorflow.org/js/guide/conversion).
+4. Convert the TFJS model into Progressive model by following the [instruction on our repo](./converter).
+
 
 ## License
 

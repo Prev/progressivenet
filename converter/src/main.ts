@@ -1,16 +1,18 @@
 import * as path from 'path';
-import { promises as fs } from 'fs';
+import { promises as fs, existsSync } from 'fs';
 import { quantization, PGNetConfig } from 'progressivenet';
 import * as loader from './tfjs_model_loader';
 
 
 async function convert(tfjsModelPath: string, outputPath: string, progressiveInterface: number[]) {
+    // Remove old contents
+    if (existsSync(outputPath)) {
+        await fs.rm(outputPath, { recursive: true });
+    }
+    await fs.mkdir(outputPath);
+
     const modelAndWeightsConfig = await loader.loadModelAndWeightsConfig(tfjsModelPath);
     const weights = await loader.loadWeights(modelAndWeightsConfig, tfjsModelPath);
-
-    // Remove old contents
-    await fs.rmdir(outputPath, { recursive: true });
-    await fs.mkdir(outputPath);
 
     const pgNetConfig = {
         'layers': [],
@@ -96,9 +98,9 @@ async function convert(tfjsModelPath: string, outputPath: string, progressiveInt
 function main(argv: string[]) {
     if (argv.length < 4) {
         console.log('\nUsage:\n    $ progressivenet-convert MODEL_PATH OUT_DIR [INTERFACE]');
-        console.log('\nExample:\n    $ progressivenet-convert ./mobilenet_v2 ./mobilenet_v2_2222 2,2,2,2')
-        console.log('    $ progressivenet-convert ./mobilenet_v2 ./mobilenet_v2_44816 4,4,8,16')
-        console.log('    $ progressivenet-convert ./mobilenet_v2 ./mobilenet_v2_511116 5,11,16')
+        console.log('\nExample:\n    $ progressivenet-convert ./mobilenet_v2 ./pg_mobilenet_v2_2222 2,2,2,2')
+        console.log('    $ progressivenet-convert ./mobilenet_v2 ./pg_mobilenet_v2_44816 4,4,8,16')
+        console.log('    $ progressivenet-convert ./mobilenet_v2 ./pg_mobilenet_v2_511116 5,11,16')
         process.exit(1);
     }
 

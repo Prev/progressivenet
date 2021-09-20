@@ -1,6 +1,6 @@
 {
   "name": "progressivenet-converter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Converter from TFJS models to progressive models",
   "scripts": {
     "build": "tsc",

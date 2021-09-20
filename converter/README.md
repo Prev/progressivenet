@@ -14,6 +14,8 @@ $ npm install -g progressivenet-converter
 
 To convert a model, you have to prepare TFJS models for conversion.
 [TensorFlow Hub]([TFHub](https://tfhub.dev/s?deployment-format=tfjs)) provides various types of pretrained models in free.
+Or you can generate your own TFJS models by [converting the TF models](https://www.tensorflow.org/js/guide/conversion).
+
 You can filter the model format in TFHub, thus you can easily find 
 the TFJS models in here.
 The TFJS model has the structure like below:
@@ -29,7 +31,7 @@ model.json
 
 ### Convert model
 
-To convert TFJS model to progressive model, run command like below:
+To convert a TFJS model into a progressive model, run command like below:
 
 ```bash
 $ progressivenet-converter <TFJS_MODEL_PATH> <OUT_DIR> [<INTERFACE>]
