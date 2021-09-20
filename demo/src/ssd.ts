@@ -1,7 +1,8 @@
 import { loadSequentially, ObjectDetector, GraphModel, tf } from 'progressivenet';
 import './common';
 
-const modelUrl = 'https://research.prev.kr/pgnet-models/detection/ssd_mobilenet_v2_intv2/';
+const modelName = 'ssd_mobilenet_v2_intv2';
+const modelUrl = `https://d25yykp5qt10se.cloudfront.net/pgnets-models/${modelName}/`;
 const numProgressSteps = 8;
 const concurrentMode = true;
 

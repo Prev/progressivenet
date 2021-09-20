@@ -2,14 +2,10 @@ import { loadSequentially, Classifier, GraphModel, tf } from 'progressivenet';
 import './common';
 
 const modelName = 'mobilenet_v2';
-
-const modelUrl = `https://research.prev.kr/pgnet-models/classification/${modelName}_intv2/`;
+const modelUrl = `https://d25yykp5qt10se.cloudfront.net/pgnets-models/${modelName}_intv2/`;
 const numProgressSteps = 8;
 const concurrentMode = true;
 
-// const modelUrl = `https://research.prev.kr/pgnet-models/classification/${modelName}_16_16/`;
-// const numProgressSteps = 1;
-// const concurrentMode = false;
 
 let predictionResults = [] as string[];
 
