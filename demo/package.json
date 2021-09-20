@@ -13,17 +13,18 @@
 		"build": "webpack --mode production"
 	},
 	"devDependencies": {
-		"@tensorflow/tfjs-converter": "^1.7.1",
-		"@tensorflow/tfjs-core": "^1.7.1",
+		"@tensorflow/tfjs-converter": "^1.7.4",
+		"@tensorflow/tfjs-core": "^1.7.4",
+		"@webpack-cli/serve": "^1.5.2",
 		"ts-loader": "^6.2.2",
 		"typescript": "^3.8.3",
 		"webpack": "^4.42.1",
-		"webpack-cli": "^3.3.11",
-		"webpack-dev-server": "^3.10.3"
+		"webpack-cli": "^4.8.0",
+		"webpack-dev-server": "^4.2.1"
 	},
 	"dependencies": {
 		"@tensorflow-models/coco-ssd": "^2.0.1",
-		"@tensorflow/tfjs": "^1.7.1",
+		"@tensorflow/tfjs": "^1.7.4",
 		"@types/jquery": "^3.3.34",
 		"progressivenet": "^1.0.0"
 	}

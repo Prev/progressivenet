@@ -17,8 +17,8 @@
   "author": "prevdev@gmail.com",
   "license": "UNLICENSED",
   "dependencies": {
-    "@tensorflow/tfjs": "^1.7.1",
-    "@tensorflow/tfjs-core": "^1.7.1",
+    "@tensorflow/tfjs": "^1.7.4",
+    "@tensorflow/tfjs-core": "^1.7.4",
     "uint-n-array": "^1.0.0"
   },
   "devDependencies": {

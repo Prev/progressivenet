@@ -41,8 +41,8 @@ For example, if you set it to `4,4,4,4`, then the model is divided to four parts
 Here are the examples:
 
 ```bash
-$ progressivenet-convert ./mobilenet_v2 ./mobilenet_v2_2222 2,2,2,2
-$ progressivenet-convert ./mobilenet_v2 ./mobilenet_v2_44816 4,4,8,16
+$ progressivenet-converter ./mobilenet_v2 ./mobilenet_v2_2222 2,2,2,2
+$ progressivenet-converter ./mobilenet_v2 ./mobilenet_v2_44816 4,4,8,16
 ```
 
 
