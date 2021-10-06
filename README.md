@@ -3,7 +3,7 @@
 Official implementation of the paper "Progressive Transmission and Inference of Deep Learning Models", to appear at 20th IEEE International Conference on Machine
 Learning and Applications (ICMLA 2021).
 
-[[preprint](https://get.prev.kr/papers/preprint/progressivenet.pdf)]
+[[arXiv](https://arxiv.org/abs/2110.00916)]
 [[demo](https://prev.github.io/progressivenet/)]
 
 [Youngsoo Lee](https://github.com/Prev)<sup>1</sup>, [Sangdoo Yun](https://github.com/hellbell)<sup>2</sup>, [Yeonghun Kim](https://github.com/Neutrinoant)<sup>1</sup> Sunghee Choi<sup>1</sup>
